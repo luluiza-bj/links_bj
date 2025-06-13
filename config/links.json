@@ -1,0 +1,58 @@
+{
+  "profile": {
+    "name": "bejota",
+    "bio": "Baterista, Rapper & Produtor Musical",
+    "image": "assets/images/profile.jpg"
+  },
+  "social": {
+    "instagram": "https://instagram.com/o_bejota",
+    "spotify": "https://open.spotify.com/intl-pt/artist/61OsjR06HJtGksrUP0tqnI?si=BOWJnG_vQU-Y8vZ1__-KTg",
+    "apple_music": "https://music.apple.com/us/artist/bj/1819834296",
+    "youtube": "https://youtube.com/@o_bejota",
+    "email": "mailto:jvldo@aluno.ifnmg.edu.br"
+  },
+  "links": [
+    {
+      "title": "Último Lançamento",
+      "description": "Ouça o meu lançamento mais recente",
+      "url": "https://open.spotify.com/intl-pt/track/6B8yopdmztJgSsTY1js3Uu?si=94f534de8adb4edd",
+      "active": true
+    },
+    {
+      "title": "Música no Apple Music",
+      "description": "Ouça também no Apple Music",
+      "url": "https://music.apple.com/us/album/jeito-de-brazuca-single/1820204063",
+      "active": true
+    },
+    {
+      "title": "Canal no Youtube",
+      "description": "Visite meu canal no YT",
+      "url": "https://youtube.com/@o_bejota",
+      "active": true
+    },
+    {
+      "title": "Instagram",
+      "description": "Acompanhe meu Instagram",
+      "url": "https://instagram.com/o_bejota",
+      "active": true
+    },
+    {
+      "title": "Me contate",
+      "description": "Contato Profissional",
+      "url": "mailto:jvldo@aluno.ifnmg.edu.br",
+      "active": true
+    }
+  ],
+  "settings": {
+    "theme": "auto",
+    "analytics": {
+      "enabled": false,
+      "google_analytics": "GA_MEASUREMENT_ID"
+    },
+    "features": {
+      "click_tracking": true,
+      "share_button": false,
+      "qr_code": false
+    }
+  }
+}

@@ -30,6 +30,218 @@ class ThemeManager {
     }
 }
 
+// Countdown Timer Manager
+class CountdownManager {
+    constructor(targetDateString = null) {
+        this.countdownInterval = null;
+        this.targetDate = null;
+        this.isActive = false;
+        this.countdownElement = null;
+        
+        // *** DEFINA SUA DATA FINAL AQUI ***
+        // Formato: 'YYYY-MM-DD HH:MM:SS' ou 'YYYY-MM-DDTHH:MM:SS'
+        // Exemplos:
+        // '2025-12-31 23:59:59' - Ano Novo
+        // '2025-07-15 18:30:00' - 15 de julho às 18:30
+        // '2025-06-30 12:00:00' - 30 de junho ao meio-dia
+        const FINAL_DATE = targetDateString || '2025-12-31 23:59:59';
+        
+        this.setTargetDate(FINAL_DATE);
+        this.init();
+    }
+
+    init() {
+        // Check if countdown elements exist in DOM
+        this.countdownElement = document.getElementById('countdown');
+        if (!this.countdownElement) return;
+
+        // Auto-start countdown if elements exist and target date is set
+        if (this.countdownElement && this.targetDate) {
+            this.startCountdown();
+        }
+    }
+
+    setTargetDate(dateString) {
+        try {
+            // Handle different date formats
+            let formattedDate = dateString;
+            if (!dateString.includes('T') && dateString.includes(' ')) {
+                formattedDate = dateString.replace(' ', 'T');
+            }
+            
+            this.targetDate = new Date(formattedDate);
+            
+            // Validate the date
+            if (isNaN(this.targetDate.getTime())) {
+                throw new Error('Data inválida');
+            }
+            
+            // Check if date is in the future
+            if (this.targetDate <= new Date()) {
+                console.warn('⚠️ Data definida já passou! Definindo para 24 horas a partir de agora.');
+                this.targetDate = new Date();
+                this.targetDate.setHours(this.targetDate.getHours() + 24);
+            }
+            
+            console.log(`🎯 Countdown definido para: ${this.targetDate.toLocaleString('pt-BR')}`);
+            
+        } catch (error) {
+            console.error('❌ Erro ao definir data do countdown:', error);
+            // Fallback: 24 hours from now
+            this.targetDate = new Date();
+            this.targetDate.setHours(this.targetDate.getHours() + 24);
+            console.log('🔄 Usando data padrão (24h a partir de agora)');
+        }
+    }
+
+    startCountdown() {
+        if (!this.targetDate) {
+            console.error('❌ Data final não definida');
+            return;
+        }
+        
+        // Clear any existing interval
+        this.stopCountdown();
+        
+        // Update immediately
+        this.updateCountdown();
+        
+        // Update every second
+        this.countdownInterval = setInterval(() => this.updateCountdown(), 1000);
+        this.isActive = true;
+        
+        console.log('⏰ Countdown iniciado!');
+    }
+
+    stopCountdown() {
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+            this.countdownInterval = null;
+            this.isActive = false;
+            console.log('⏰ Countdown parado');
+        }
+    }
+
+    // Método para atualizar a data final (útil para mudanças dinâmicas)
+    updateTargetDate(newDateString) {
+        const wasActive = this.isActive;
+        this.stopCountdown();
+        this.setTargetDate(newDateString);
+        
+        if (wasActive) {
+            this.startCountdown();
+        }
+    }
+
+    // Método para obter informações do countdown
+    getCountdownInfo() {
+        if (!this.targetDate) return null;
+        
+        const now = new Date().getTime();
+        const distance = this.targetDate.getTime() - now;
+        
+        if (distance < 0) return { finished: true };
+        
+        return {
+            finished: false,
+            totalSeconds: Math.floor(distance / 1000),
+            days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+            minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds: Math.floor((distance % (1000 * 60)) / 1000),
+            targetDate: this.targetDate,
+            isActive: this.isActive
+        };
+    }
+
+    updateCountdown() {
+        const now = new Date().getTime();
+        const distance = this.targetDate.getTime() - now;
+
+        if (distance < 0) {
+            // Countdown finished
+            this.showCountdownFinished();
+            this.stopCountdown();
+            return;
+        }
+
+        // Show countdown, hide finished message
+        this.showCountdownActive();
+
+        // Calculate time units
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Update display with zero padding
+        this.updateTimeDisplay('days', days);
+        this.updateTimeDisplay('hours', hours);
+        this.updateTimeDisplay('minutes', minutes);
+        this.updateTimeDisplay('seconds', seconds);
+    }
+
+    updateTimeDisplay(unit, value) {
+        const element = document.getElementById(unit);
+        if (element) {
+            element.textContent = value.toString().padStart(2, '0');
+        }
+    }
+
+    showCountdownActive() {
+        const countdownDisplay = document.getElementById('countdown');
+        const finishedDisplay = document.getElementById('finished');
+        
+        if (countdownDisplay) countdownDisplay.style.display = 'flex';
+        if (finishedDisplay) finishedDisplay.style.display = 'none';
+    }
+
+    showCountdownFinished() {
+        const countdownDisplay = document.getElementById('countdown');
+        const finishedDisplay = document.getElementById('finished');
+        
+        if (countdownDisplay) countdownDisplay.style.display = 'none';
+        if (finishedDisplay) finishedDisplay.style.display = 'block';
+        
+        Utils.showToast('🎉 Tempo esgotado!', 3000);
+        
+        // Add celebration animation
+        this.triggerCelebration();
+    }
+
+    triggerCelebration() {
+        // Add confetti-like effect using existing profile image
+        const profileImg = document.querySelector('.profile-img');
+        if (profileImg) {
+            profileImg.style.animation = 'celebration 2s ease-in-out';
+            setTimeout(() => {
+                profileImg.style.animation = '';
+            }, 2000);
+        }
+    }
+
+    // Simple countdown utility for other components
+    static createSimpleCountdown(seconds, callback) {
+        let timeLeft = seconds;
+        
+        const interval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                if (callback) callback();
+                return;
+            }
+            
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            console.log(`Countdown: ${mins}:${secs.toString().padStart(2, '0')}`);
+            
+            timeLeft--;
+        }, 1000);
+        
+        return interval;
+    }
+}
+
 // Links management
 class LinksManager {
     constructor() {
@@ -215,7 +427,7 @@ class AnimationUtils {
         // Check if IntersectionObserver is supported
         if (!('IntersectionObserver' in window)) {
             // Fallback for older browsers
-            document.querySelectorAll('.link-item, .social-link').forEach(el => {
+            document.querySelectorAll('.link-item, .social-link, .countdown-container').forEach(el => {
                 el.style.opacity = '1';
                 el.style.transform = 'translateY(0)';
             });
@@ -235,8 +447,8 @@ class AnimationUtils {
             rootMargin: '10px'
         });
 
-        // Observe all animated elements
-        document.querySelectorAll('.link-item, .social-link, .profile-section').forEach(el => {
+        // Observe all animated elements including countdown
+        document.querySelectorAll('.link-item, .social-link, .profile-section, .countdown-container').forEach(el => {
             observer.observe(el);
         });
     }
@@ -286,6 +498,31 @@ class AnimationUtils {
                 setTimeout(() => {
                     link.style.transform = 'scale(1.2) rotate(10deg)';
                 }, 100);
+            });
+        });
+    }
+
+    static addCountdownEffects() {
+        // Add hover effects to countdown controls
+        document.querySelectorAll('.countdown-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.transform = 'scale(1.05)';
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add pulse effect to time units
+        document.querySelectorAll('.time-unit').forEach(unit => {
+            unit.addEventListener('mouseenter', () => {
+                unit.style.transform = 'scale(1.1)';
+                unit.style.transition = 'transform 0.2s ease';
+            });
+
+            unit.addEventListener('mouseleave', () => {
+                unit.style.transform = 'scale(1)';
             });
         });
     }
@@ -369,6 +606,18 @@ class Utils {
                 }
             }, 300);
         }, duration);
+    }
+
+    // Format time for countdown display
+    static formatTime(seconds) {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        
+        if (hrs > 0) {
+            return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 }
 
@@ -456,6 +705,48 @@ style.textContent = `
     .theme-btn:active {
         transform: scale(0.9);
     }
+    
+    /* Countdown animations */
+    .countdown-container {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .countdown-container.animated {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .time-unit {
+        transition: transform 0.2s ease;
+    }
+    
+    .countdown-btn {
+        transition: transform 0.2s ease;
+    }
+    
+    .countdown-finished {
+        animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes celebration {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.1) rotate(5deg); }
+        50% { transform: scale(1.2) rotate(-5deg); }
+        75% { transform: scale(1.1) rotate(5deg); }
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
 `;
 document.head.appendChild(style);
 
@@ -468,10 +759,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const themeManager = new ThemeManager();
         const linksManager = new LinksManager();
         
+        const countdownManager = new CountdownManager('2025-07-20 20:00:00');
+        
         // Initialize animations
         AnimationUtils.observeElements();
         AnimationUtils.addProfileEffects();
         AnimationUtils.addSocialEffects();
+        AnimationUtils.addCountdownEffects();
         
         // Add keyboard shortcuts
         document.addEventListener('keydown', (e) => {
@@ -484,11 +778,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
+            // Ctrl+Space for countdown toggle
+            if (e.key === ' ' && e.ctrlKey) {
+                e.preventDefault();
+                if (countdownManager.isActive) {
+                    countdownManager.stopCountdown();
+                } else {
+                    countdownManager.startCountdown();
+                }
+            }
+            
             // ESC to close any modals or reset animations
             if (e.key === 'Escape') {
                 document.querySelectorAll('.clicked, .hover').forEach(el => {
                     el.classList.remove('clicked', 'hover');
                 });
+                countdownManager.stopCountdown();
             }
         });
         
@@ -514,22 +819,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (konamiCode.join(',') === konami.join(',')) {
                 Utils.showToast('🎤 Easter Egg! Bejota no beat! 🥁', 3000);
                 document.querySelector('.profile-img').style.animation = 'spin 2s linear infinite';
+                
+                // Start a fun countdown
+                CountdownManager.createSimpleCountdown(10, () => {
+                    Utils.showToast('🎵 Beat drop! 🎶', 2000);
+                });
+                
                 setTimeout(() => {
-                    document.querySelector('.profile-img').style.animation = '';
+                    const profileImg = document.querySelector('.profile-img');
+                    if (profileImg) {
+                        profileImg.style.animation = '';
+                    }
                 }, 2000);
                 konamiCode = [];
             }
         });
         
-        // Add spin animation for easter egg
-        const spinStyle = document.createElement('style');
-        spinStyle.textContent = `
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(spinStyle);
+        // Store managers globally for potential external access
+        window.bejotaManagers = {
+            theme: themeManager,
+            links: linksManager,
+            countdown: countdownManager
+        };
         
         console.log('🚀 bejota links carregado com sucesso!');
         

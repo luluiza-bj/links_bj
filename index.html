@@ -10,14 +10,39 @@
 <body>
     <div class="container">
         <div class="profile-section">
-            <img src="assets/images/profile.jpg" alt="Profile Picture" class="profile-img">
+            <img src="assets/images/pfp_bj.jpg" alt="Profile Picture" class="profile-img">
             <h1 class="profile-name">bejota</h1>
             <p class="profile-bio">Baterista, Rapper & Produtor Musical</p>
         </div>
 
+        
         <div class="links-section" id="linksContainer">
             <!-- Links will be loaded here by JavaScript -->
         </div>
+
+        <!-- Countdown Section -->
+        <div id="countdown" class="countdown-display">
+            <div class="time-unit">
+                <span id="days" class="time-number">00</span>
+                <div class="time-label">Dias</div>
+            </div>
+            <div class="time-unit">
+                <span id="hours" class="time-number">00</span>
+                <div class="time-label">Horas</div>
+            </div>
+            <div class="time-unit">
+                <span id="minutes" class="time-number">00</span>
+                <div class="time-label">Minutos</div>
+            </div>
+            <div class="time-unit">
+                <span id="seconds" class="time-number">00</span>
+                <div class="time-label">Segundos</div>
+            </div>
+        </div>
+        <div id="finished" style="display: none;">
+            🎉 Tempo esgotado! 🎉
+        </div>
+
 
         <div class="social-section">
             <a href="https://instagram.com/o_bejota" target="_blank" class="social-link">

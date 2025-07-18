@@ -2,7 +2,7 @@
 class ThemeManager {
     constructor() {
         // Use in-memory storage instead of localStorage for compatibility
-        this.theme = 'light';
+        this.theme = 'main';
         this.themeToggle = document.getElementById('themeToggle');
         this.init();
     }
@@ -16,16 +16,16 @@ class ThemeManager {
 
     setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        document.body.className = theme === 'dark' ? 'dark-theme' : '';
+        document.body.className = theme === 'default' ? 'default-theme' : '';
         
         if (this.themeToggle) {
-            this.themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            this.themeToggle.textContent = theme === 'default' ? '☀️' : '🌙';
         }
         this.theme = theme;
     }
 
     toggleTheme() {
-        const newTheme = this.theme === 'light' ? 'dark' : 'light';
+        const newTheme = this.theme === 'main' ? 'default' : 'main';
         this.setTheme(newTheme);
     }
 }

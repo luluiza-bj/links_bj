@@ -1,23 +1,23 @@
 /* CSS Variables for theme switching */
 :root {
-    --bg-color: rgb(240, 235, 220);
-    --card-bg: #ffffff;
+    --bg-color: rgb(65, 105, 225);
+    --card-bg: #88aad9;
     --text-primary: #1a1a1a;
-    --text-secondary: #666666;
+    --text-secondary: #ffffff;
     --accent-color: #000000;
     --border-color: #e5e7eb;
-    --hover-color: #f3f4f6;
+    --hover-color: #88aad9;
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
+[data-theme="default"] {
+    --bg-color: rgb(240, 235, 220);
+    --card-bg: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #8b8b8b;
     --accent-color: #000000;
-    --border-color: #334155;
-    --hover-color: #334155;
+    --border-color: #8b8b8b;
+    --hover-color: #ffffff;
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 

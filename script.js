@@ -19,7 +19,7 @@ class ThemeManager {
         document.body.className = theme === 'default' ? 'default-theme' : '';
         
         if (this.themeToggle) {
-            this.themeToggle.textContent = theme === 'default' ? '☀️' : '🌙';
+            this.themeToggle.textContent = theme === 'default' ? '🐒' : '🕴️';
         }
         this.theme = theme;
     }

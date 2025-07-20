@@ -39,12 +39,13 @@ class CountdownManager {
         this.countdownElement = null;
         
         // *** DEFINA SUA DATA FINAL AQUI ***
-        // Formato: 'YYYY-MM-DD HH:MM:SS' ou 'YYYY-MM-DDTHH:MM:SS'
-        // Exemplos:
+        // Para CANCELAR o countdown, defina como null:
+        const FINAL_DATE = null; // <-- Mude para null para cancelar
+        
+        // Exemplos de datas:
         // '2025-12-31 23:59:59' - Ano Novo
-        // '2025-07-15 18:30:00' - 15 de julho às 18:30
-        // '2025-06-30 12:00:00' - 30 de junho ao meio-dia
-        const FINAL_DATE = targetDateString || '2025-12-31 23:59:59';
+        // '2025-07-21 18:30:00' - 21 de julho às 18:30
+        // null - Cancela o countdown
         
         this.setTargetDate(FINAL_DATE);
         this.init();
@@ -55,6 +56,12 @@ class CountdownManager {
         this.countdownElement = document.getElementById('countdown');
         if (!this.countdownElement) return;
 
+        // Se não há data definida, esconder countdown
+        if (!this.targetDate) {
+            this.hideCountdown();
+            return;
+        }
+
         // Auto-start countdown if elements exist and target date is set
         if (this.countdownElement && this.targetDate) {
             this.startCountdown();
@@ -62,6 +69,13 @@ class CountdownManager {
     }
 
     setTargetDate(dateString) {
+        // Se dateString é null, undefined ou string vazia, cancela countdown
+        if (!dateString || dateString.trim() === '') {
+            this.targetDate = null;
+            console.log('❌ Countdown cancelado - data não definida');
+            return;
+        }
+
         try {
             // Handle different date formats
             let formattedDate = dateString;
@@ -78,27 +92,58 @@ class CountdownManager {
             
             // Check if date is in the future
             if (this.targetDate <= new Date()) {
-                console.warn('⚠️ Data definida já passou! Definindo para 24 horas a partir de agora.');
-                this.targetDate = new Date();
-                this.targetDate.setHours(this.targetDate.getHours() + 24);
+                console.warn('⚠️ Data definida já passou! Cancelando countdown.');
+                this.targetDate = null;
+                return;
             }
             
             console.log(`🎯 Countdown definido para: ${this.targetDate.toLocaleString('pt-BR')}`);
             
         } catch (error) {
             console.error('❌ Erro ao definir data do countdown:', error);
-            // Fallback: 24 hours from now
-            this.targetDate = new Date();
-            this.targetDate.setHours(this.targetDate.getHours() + 24);
-            console.log('🔄 Usando data padrão (24h a partir de agora)');
+            this.targetDate = null;
         }
+    }
+
+    // Novo método para esconder o countdown
+    hideCountdown() {
+        const countdownContainer = document.querySelector('.countdown-container');
+        const countdownDisplay = document.getElementById('countdown');
+        const finishedDisplay = document.getElementById('finished');
+        
+        if (countdownContainer) {
+            countdownContainer.style.display = 'none';
+        }
+        if (countdownDisplay) {
+            countdownDisplay.style.display = 'none';
+        }
+        if (finishedDisplay) {
+            finishedDisplay.style.display = 'none';
+        }
+        
+        console.log('👻 Countdown escondido');
+    }
+
+    // Novo método para mostrar o countdown
+    showCountdown() {
+        const countdownContainer = document.querySelector('.countdown-container');
+        
+        if (countdownContainer) {
+            countdownContainer.style.display = 'block';
+        }
+        
+        console.log('👀 Countdown visível');
     }
 
     startCountdown() {
         if (!this.targetDate) {
-            console.error('❌ Data final não definida');
+            console.error('❌ Não é possível iniciar countdown - data final não definida');
+            this.hideCountdown();
             return;
         }
+        
+        // Mostrar countdown se estava escondido
+        this.showCountdown();
         
         // Clear any existing interval
         this.stopCountdown();
@@ -122,11 +167,26 @@ class CountdownManager {
         }
     }
 
+    // Método atualizado para cancelar countdown
+    cancelCountdown() {
+        this.stopCountdown();
+        this.targetDate = null;
+        this.hideCountdown();
+        Utils.showToast('🚫 Countdown cancelado', 2000);
+        console.log('🚫 Countdown cancelado pelo usuário');
+    }
+
     // Método para atualizar a data final (útil para mudanças dinâmicas)
     updateTargetDate(newDateString) {
         const wasActive = this.isActive;
         this.stopCountdown();
         this.setTargetDate(newDateString);
+        
+        // Se a nova data é null, esconder countdown
+        if (!this.targetDate) {
+            this.hideCountdown();
+            return;
+        }
         
         if (wasActive) {
             this.startCountdown();
@@ -135,15 +195,22 @@ class CountdownManager {
 
     // Método para obter informações do countdown
     getCountdownInfo() {
-        if (!this.targetDate) return null;
+        if (!this.targetDate) {
+            return { 
+                cancelled: true,
+                finished: false,
+                isActive: this.isActive 
+            };
+        }
         
         const now = new Date().getTime();
         const distance = this.targetDate.getTime() - now;
         
-        if (distance < 0) return { finished: true };
+        if (distance < 0) return { finished: true, cancelled: false };
         
         return {
             finished: false,
+            cancelled: false,
             totalSeconds: Math.floor(distance / 1000),
             days: Math.floor(distance / (1000 * 60 * 60 * 24)),
             hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -155,6 +222,13 @@ class CountdownManager {
     }
 
     updateCountdown() {
+        // Se não há data alvo, esconder countdown
+        if (!this.targetDate) {
+            this.hideCountdown();
+            this.stopCountdown();
+            return;
+        }
+
         const now = new Date().getTime();
         const distance = this.targetDate.getTime() - now;
 
@@ -179,66 +253,6 @@ class CountdownManager {
         this.updateTimeDisplay('hours', hours);
         this.updateTimeDisplay('minutes', minutes);
         this.updateTimeDisplay('seconds', seconds);
-    }
-
-    updateTimeDisplay(unit, value) {
-        const element = document.getElementById(unit);
-        if (element) {
-            element.textContent = value.toString().padStart(2, '0');
-        }
-    }
-
-    showCountdownActive() {
-        const countdownDisplay = document.getElementById('countdown');
-        const finishedDisplay = document.getElementById('finished');
-        
-        if (countdownDisplay) countdownDisplay.style.display = 'flex';
-        if (finishedDisplay) finishedDisplay.style.display = 'none';
-    }
-
-    showCountdownFinished() {
-        const countdownDisplay = document.getElementById('countdown');
-        const finishedDisplay = document.getElementById('finished');
-        
-        if (countdownDisplay) countdownDisplay.style.display = 'none';
-        if (finishedDisplay) finishedDisplay.style.display = 'block';
-        
-        Utils.showToast('🎉 Tempo esgotado!', 3000);
-        
-        // Add celebration animation
-        this.triggerCelebration();
-    }
-
-    triggerCelebration() {
-        // Add confetti-like effect using existing profile image
-        const profileImg = document.querySelector('.profile-img');
-        if (profileImg) {
-            profileImg.style.animation = 'celebration 2s ease-in-out';
-            setTimeout(() => {
-                profileImg.style.animation = '';
-            }, 2000);
-        }
-    }
-
-    // Simple countdown utility for other components
-    static createSimpleCountdown(seconds, callback) {
-        let timeLeft = seconds;
-        
-        const interval = setInterval(() => {
-            if (timeLeft <= 0) {
-                clearInterval(interval);
-                if (callback) callback();
-                return;
-            }
-            
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            console.log(`Countdown: ${mins}:${secs.toString().padStart(2, '0')}`);
-            
-            timeLeft--;
-        }, 1000);
-        
-        return interval;
     }
 }
 

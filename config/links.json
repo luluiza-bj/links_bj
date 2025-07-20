@@ -15,13 +15,13 @@
     {
       "title": "Último Lançamento",
       "description": "Ouça o meu lançamento mais recente",
-      "url": "https://open.spotify.com/intl-pt/track/6B8yopdmztJgSsTY1js3Uu?si=94f534de8adb4edd",
+      "url": "https://open.spotify.com/album/3Yjs4yPTaDg8vRk6ZPczzv?si=nvlqsFkKQ2GftI5FyBox4g",
       "active": true
     },
     {
-      "title": "Música no Apple Music",
+      "title": "Apple Music",
       "description": "Ouça também no Apple Music",
-      "url": "https://music.apple.com/us/album/jeito-de-brazuca-single/1820204063",
+      "url": "https://music.apple.com/us/artist/bj/1819834296",
       "active": true
     },
     {
@@ -34,6 +34,12 @@
       "title": "Instagram",
       "description": "Acompanhe meu Instagram",
       "url": "https://instagram.com/o_bejota",
+      "active": true
+    },
+    {
+      "title": "Jeito de Brazuca",
+      "description": "Ouça no Spotify",
+      "url": "https://open.spotify.com/track/6B8yopdmztJgSsTY1js3Uu?si=46e858eb8d8348eb",
       "active": true
     },
     {

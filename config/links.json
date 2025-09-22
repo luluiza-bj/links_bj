@@ -15,7 +15,7 @@
     {
       "title": "Último Lançamento",
       "description": "Ouça o meu lançamento mais recente",
-      "url": "https://open.spotify.com/album/3Yjs4yPTaDg8vRk6ZPczzv?si=nvlqsFkKQ2GftI5FyBox4g",
+      "url": "https://open.spotify.com/track/3adviTKuLmvjqSi8ILAK1l?si=RZqacU1ATe28_CUZ-OhyXg",
       "active": true
     },
     {
@@ -43,9 +43,9 @@
       "active": true
     },
     {
-      "title": "Me contate",
-      "description": "Contato Profissional",
-      "url": "mailto:jvldo@aluno.ifnmg.edu.br",
+      "title":"Coisas Boas da Vida",
+      "description": "Ouça no Spotify",
+      "url":"https://open.spotify.com/intl-pt/track/0NYhqnLKGputoek4sWGrK3?si=da98d7d278444b19",
       "active": true
     }
   ],

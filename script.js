@@ -15,14 +15,38 @@ class ThemeManager {
     }
 
     setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        document.body.className = theme === 'default' ? 'default-theme' : '';
-        
-        if (this.themeToggle) {
-            this.themeToggle.textContent = theme === 'default' ? '🐒' : '🕴️';
-        }
-        this.theme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.className = theme === 'default' ? 'default-theme' : '';
+    
+    if (this.themeToggle) {
+        this.themeToggle.textContent = theme === 'default' ? '♧' : '♣︎';
     }
+
+    // Troca a imagem de perfil conforme o tema
+    const profileImg = document.querySelector('.profile-img');
+    if (profileImg) {
+        const newSrc = theme === 'default'
+            ? 'assets/images/bejota_padrao.jpg'
+            : 'assets/images/bejota_referencia.jpeg';
+
+        const preload = new Image();
+        preload.src = newSrc;
+        preload.onload = () => {
+            profileImg.style.transition = 'none';
+            profileImg.style.opacity = '0';
+
+            requestAnimationFrame(() => {
+                profileImg.src = newSrc;
+                requestAnimationFrame(() => {
+                    profileImg.style.transition = 'opacity 0.4s ease';
+                    profileImg.style.opacity = '1';
+                });
+            });
+        };
+    }
+
+    this.theme = theme;
+}
 
     toggleTheme() {
         const newTheme = this.theme === 'main' ? 'default' : 'main';

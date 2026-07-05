@@ -15,38 +15,15 @@ class ThemeManager {
     }
 
     setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.body.className = theme === 'default' ? 'default-theme' : '';
-    
-    if (this.themeToggle) {
-        this.themeToggle.textContent = theme === 'default' ? '♧' : '♣︎';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.className = theme === 'default' ? 'default-theme' : '';
+        
+        if (this.themeToggle) {
+            this.themeToggle.textContent = theme === 'default' ? '♧' : '♣︎';
+        }
+
+        this.theme = theme;
     }
-
-    // Troca a imagem de perfil conforme o tema
-    const profileImg = document.querySelector('.profile-img');
-    if (profileImg) {
-        const newSrc = theme === 'default'
-            ? 'assets/images/bejota_padrao.jpg'
-            : 'assets/images/bejota_referencia.jpeg';
-
-        const preload = new Image();
-        preload.src = newSrc;
-        preload.onload = () => {
-            profileImg.style.transition = 'none';
-            profileImg.style.opacity = '0';
-
-            requestAnimationFrame(() => {
-                profileImg.src = newSrc;
-                requestAnimationFrame(() => {
-                    profileImg.style.transition = 'opacity 0.4s ease';
-                    profileImg.style.opacity = '1';
-                });
-            });
-        };
-    }
-
-    this.theme = theme;
-}
 
     toggleTheme() {
         const newTheme = this.theme === 'main' ? 'default' : 'main';
@@ -62,9 +39,8 @@ class CountdownManager {
         this.isActive = false;
         this.countdownElement = null;
         
-        // *** DEFINA SUA DATA FINAL AQUI ***
-        // Para CANCELAR o countdown, defina como null:
-        const FINAL_DATE = null; // <-- Mude para null para cancelar
+        //DEFINA SUA DATA FINAL AQUI
+        const FINAL_DATE = '2026-07-06 12:00:00'; // <-- Mude para null para cancelar
         
         // Exemplos de datas:
         // '2025-12-31 23:59:59' - Ano Novo
@@ -278,6 +254,32 @@ class CountdownManager {
         this.updateTimeDisplay('minutes', minutes);
         this.updateTimeDisplay('seconds', seconds);
     }
+    showCountdownActive() {
+        if (this.countdownElement) {
+            this.countdownElement.style.display = 'flex';
+        }
+        const finishedElement = document.getElementById('finished');
+        if (finishedElement) {
+            finishedElement.style.display = 'none';
+        }
+    }
+
+    showCountdownFinished() {
+        if (this.countdownElement) {
+            this.countdownElement.style.display = 'none';
+        }
+        const finishedElement = document.getElementById('finished');
+        if (finishedElement) {
+            finishedElement.style.display = 'block';
+        }
+    }
+
+    updateTimeDisplay(unit, value) {
+        const element = document.getElementById(unit);
+        if (element) {
+            element.textContent = value.toString().padStart(2, '0');
+        }
+    }
 }
 
 // Links management
@@ -295,12 +297,35 @@ class LinksManager {
             }
             const data = await response.json();
             
+            // NOVO: atualiza nome e bio do perfil, se existirem no JSON
+            if (data.profile) {
+                this.renderProfile(data.profile);
+            }
+            
             // Handle different JSON structures
             const links = data.links || data;
             this.renderLinks(links);
         } catch (error) {
             console.error('Error loading links:', error);
             this.renderFallbackLinks();
+        }
+    }
+
+    renderProfile(profile) {
+        const nameEl = document.querySelector('.profile-name');
+        const bioEl = document.querySelector('.profile-bio');
+        const imgEl = document.querySelector('.profile-img');
+        
+        if (nameEl && profile.name) {
+            nameEl.textContent = profile.name;
+        }
+        
+        if (bioEl && profile.bio) {
+            bioEl.textContent = profile.bio;
+        }
+        
+        if (imgEl && profile.image) {
+            imgEl.src = profile.image;
         }
     }
 
@@ -797,7 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const themeManager = new ThemeManager();
         const linksManager = new LinksManager();
         
-        const countdownManager = new CountdownManager('2025-07-20 20:00:00');
+        const countdownManager = new CountdownManager('2026-07-05 12:00:00');
         
         // Initialize animations
         AnimationUtils.observeElements();

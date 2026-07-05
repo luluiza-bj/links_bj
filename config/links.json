@@ -1,8 +1,8 @@
 {
   "profile": {
-    "name": "bejota",
+    "name": "bj'",
     "bio": "Baterista, Rapper & Produtor Musical",
-    "image": "assets/images/profile.jpg"
+    "image": "assets/images/boombap_busao.jpeg"
   },
   "social": {
     "instagram": "https://instagram.com/o_bejota",
@@ -15,7 +15,7 @@
     {
       "title": "Último Lançamento",
       "description": "Ouça o meu lançamento mais recente",
-      "url": "https://open.spotify.com/track/3adviTKuLmvjqSi8ILAK1l?si=RZqacU1ATe28_CUZ-OhyXg",
+      "url": "https://open.spotify.com/intl-pt/album/3SorGpOVQFEEcOA5dYz5WJ?si=BEeJeTMCTHWXKXWFH4PTrA",
       "active": true
     },
     {
@@ -27,19 +27,19 @@
     {
       "title": "Canal no Youtube",
       "description": "Visite meu canal no YT",
-      "url": "https://youtube.com/@o_bejota",
+      "url": "https://www.youtube.com/@eu_bj24",
       "active": true
     },
     {
       "title": "Instagram",
       "description": "Acompanhe meu Instagram",
-      "url": "https://instagram.com/o_bejota",
+      "url": "https://www.instagram.com/eubj_24/",
       "active": true
     },
     {
-      "title": "Jeito de Brazuca",
+      "title": "EU (não) SOU REFERÊNCIA",
       "description": "Ouça no Spotify",
-      "url": "https://open.spotify.com/track/6B8yopdmztJgSsTY1js3Uu?si=46e858eb8d8348eb",
+      "url": "https://open.spotify.com/intl-pt/album/7nCtPo5bXtzj5U07wNICVx?si=J_rhH2xMSgC08qztFmjGXw",
       "active": true
     },
     {

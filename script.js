@@ -303,7 +303,8 @@ class LinksManager {
             
             const links = data.links || data;
             this.renderLinks(links);
-
+            
+            this.setupSocialEmailLink();
         } catch (error) {
             console.error('Error loading links:', error);
             this.renderFallbackLinks();
@@ -325,6 +326,16 @@ class LinksManager {
         
         if (imgEl && profile.image) {
             imgEl.src = profile.image;
+        }
+    }
+
+    setupSocialEmailLink() {
+        const socialEmailLink = document.getElementById('socialEmailLink');
+        if (socialEmailLink) {
+            socialEmailLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.handleEmailClick(socialEmailLink.href, 'Email (social)');
+            });
         }
     }
 

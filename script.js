@@ -297,14 +297,14 @@ class LinksManager {
             }
             const data = await response.json();
             
-            // NOVO: atualiza nome e bio do perfil, se existirem no JSON
             if (data.profile) {
                 this.renderProfile(data.profile);
             }
             
-            // Handle different JSON structures
             const links = data.links || data;
             this.renderLinks(links);
+            
+            this.setupSocialEmailLink();
         } catch (error) {
             console.error('Error loading links:', error);
             this.renderFallbackLinks();

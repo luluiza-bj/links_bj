@@ -303,8 +303,7 @@ class LinksManager {
             
             const links = data.links || data;
             this.renderLinks(links);
-            
-            this.setupSocialEmailLink();
+
         } catch (error) {
             console.error('Error loading links:', error);
             this.renderFallbackLinks();
